@@ -1,0 +1,148 @@
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                   GitHub Authentication Flow                     │
+└─────────────────────────────────────────────────────────────────┘
+
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│              │     │              │     │              │
+│   Frontend   │────▶│    GitHub    │────▶│   Backend    │
+│  (React App) │     │    OAuth     │     │  (Express)   │
+│              │◀────│              │◀────│              │
+└──────────────┘     └──────────────┘     └──────────────┘
+
+Step-by-Step Flow:
+─────────────────
+
+1. User clicks "Login with GitHub"
+   │
+   ▼
+2. Redirect to GitHub OAuth page
+   https://github.com/login/oauth/authorize
+   │
+   ▼
+3. User authorizes PassOP app
+   │
+   ▼
+4. GitHub redirects to callback URL with code
+   http://localhost:5174/auth/callback?code=ABC123
+   │
+   ▼
+5. AuthCallback component sends code to backend
+   POST http://localhost:5000/api/auth/github/callback
+   │
+   ▼
+6. Backend exchanges code for access_token
+   POST https://github.com/login/oauth/access_token
+   │
+   ▼
+7. Backend fetches user data with token
+   GET https://api.github.com/user
+   │
+   ▼
+8. Backend returns user data + token to frontend
+   { user: {...}, token: "..." }
+   │
+   ▼
+9. Frontend stores in localStorage
+   - github_user
+   - github_token
+   │
+   ▼
+10. User redirected to homepage (authenticated!)
+    Password Manager is now accessible
+
+
+Component Structure:
+───────────────────
+
+App.jsx (Router + AuthProvider)
+├── Navbar.jsx (Login Button / User Profile)
+├── Routes
+│   ├── / → Manager.jsx (Protected)
+│   └── /auth/callback → AuthCallback.jsx
+└── Footer.jsx
+
+AuthContext (Global State)
+├── user (GitHub user data)
+├── isAuthenticated (boolean)
+├── login(userData, token)
+└── logout()
+
+
+Key Files & Their Roles:
+────────────────────────
+
+Frontend:
+  📄 src/App.jsx
+     → Sets up routing and wraps app in AuthProvider
+
+  📄 src/context/AuthContext.jsx
+     → Manages authentication state globally
+
+  📄 src/components/Navbar.jsx
+     → Shows login button or user profile
+
+  📄 src/components/Manager.jsx
+     → Password manager (requires authentication)
+
+  📄 src/components/AuthCallback.jsx
+     → Handles OAuth redirect and token exchange
+
+Backend:
+  📄 index.mjs
+     → Express server with OAuth endpoint
+     → POST /api/auth/github/callback
+
+Configuration:
+  📄 .env
+     → GITHUB_CLIENT_ID
+     → GITHUB_CLIENT_SECRET
+     → GITHUB_CALLBACK_URL
+
+  📄 postcss.config.js
+     → Fixed to use @tailwindcss/postcss
+
+
+Environment Variables Needed:
+────────────────────────────
+
+GITHUB_CLIENT_ID=Ov23liaThlVYfXHVteZd
+GITHUB_CLIENT_SECRET=<your_secret_here>
+GITHUB_CALLBACK_URL=http://localhost:5174/auth/callback
+
+
+Required NPM Packages:
+─────────────────────
+
+Already installed:
+  ✓ express
+  ✓ cors
+  ✓ react
+  ✓ react-dom
+  ✓ react-toastify
+  ✓ uuid
+  ✓ vite
+
+Need to install:
+  ⚠ axios
+  ⚠ dotenv
+  ⚠ react-router-dom
+
+Install command:
+  npm install axios dotenv react-router-dom
+
+
+Testing Checklist:
+─────────────────
+
+□ Backend server running (node index.mjs)
+□ Frontend server running (npm run dev)
+□ .env file has correct CLIENT_SECRET
+□ GitHub OAuth App callback URL is set
+□ Can click "Login with GitHub"
+□ GitHub authorization page appears
+□ Redirect back to app works
+□ User profile shows in navbar
+□ Password manager is accessible
+□ Logout button works
+```

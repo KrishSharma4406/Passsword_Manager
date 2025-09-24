@@ -3,10 +3,13 @@ import { useRef, useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { v4 as uuidv4 } from 'uuid';
+import { useAuth } from '../context/AuthContext';
 
 
 const Manager = () => {
+    const { isAuthenticated, user, loading } = useAuth();
     const ref = useRef();
+    const [data, setData] = useState("");
     const passwordref = useRef();
     const [form, setForm] = useState({site:"", username:"", password:""});
     const [passwordArray, setPasswordArray] = useState([]);
@@ -17,6 +20,12 @@ const Manager = () => {
         setPasswordArray(JSON.parse(passwords));
     }
     }, [])
+
+    useEffect(() => {
+    fetch("http://localhost:5000/api/hello")
+      .then(res => res.json())
+      .then(data => setData(data.message));
+  }, []);
 
     const showPassword = () => {
         if(ref.current.src.includes("icons/Eye-hide.png")) {
@@ -96,6 +105,25 @@ theme="light"
 transition="Bounce"
 />*/}
 <ToastContainer />
+
+    {loading ? (
+      <div className='bg-green-50 min-h-[595px] flex items-center justify-center'>
+        <div className="text-2xl text-green-700">Loading...</div>
+      </div>
+    ) : !isAuthenticated ? (
+      <div className='bg-green-50 min-h-[595px] flex items-center justify-center'>
+        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md">
+          <div className="text-4xl mb-4">🔒</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome to PassOP</h2>
+          <p className="text-gray-600 mb-6">
+            Please login with your GitHub account to access your password manager.
+          </p>
+          <div className="text-sm text-gray-500">
+            Click the "Login with GitHub" button in the navigation bar above to get started.
+          </div>
+        </div>
+      </div>
+    ) : (
     <div className='bg-green-50 max-h-full min-h-[595px]'>
     <div className="container mx-auto bg-green-50 max-w-[60%] py-[10vh] text-center">
         <div className="logo font-bold text-2xl">
@@ -110,7 +138,7 @@ transition="Bounce"
             <input className='bg-white px-4 rounded-3xl w-[56vh] h-[35px] border border-green-700' placeholder='Enter UserName' type="text" value={form.username} onChange={handelChange} name='username' />
             <div className='relative'>
             <input ref={passwordref} className='bg-white px-4 rounded-3xl w-[56vh] h-[35px] border border-green-700' placeholder='Enter Password' type="password" value={form.password} onChange={handelChange} name='password' />
-            <span className='absolute right-3 top-1.5' onClick={showPassword}><img className='cursor-pointer' src="icons/Eye-hide.png" alt="Show" ref={ref} /></span>
+            <span className='absolute right-3 top-1 h-6 w-6' onClick={showPassword}><img className='cursor-pointer' src="icons/Eye-hide.png" alt="Show" ref={ref} /></span>
             </div>
         </div>
         <div className='item-center'>
@@ -159,6 +187,7 @@ transition="Bounce"
     </div>
     </div>
     </div>
+    )}
     </>
   )
 }

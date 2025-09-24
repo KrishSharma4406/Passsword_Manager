@@ -8,7 +8,7 @@ const Footer = () => {
             Pass
             <span className='text-green-500'>OP/&gt;</span>
             </div>
-      Created with <img src="/Heart.gif" alt="heart" style={{height: "20px", verticalAlign: "middle"}} /> By Krish
+      Created with By Krish
     </div>
   )
 }
