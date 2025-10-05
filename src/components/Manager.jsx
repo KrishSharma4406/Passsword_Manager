@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '../context/AuthContext';
 
-
 const Manager = () => {
     const { isAuthenticated, user, loading } = useAuth();
     const ref = useRef();
@@ -91,39 +90,26 @@ const Manager = () => {
 }
   return (
     <>
-    {/* <ToastContainer
-position="top-right"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick={true}
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-theme="light"
-transition="Bounce"
-/>*/}
 <ToastContainer />
 
-    {loading ? (
-      <div className='bg-green-50 min-h-[595px] flex items-center justify-center'>
-        <div className="text-2xl text-green-700">Loading...</div>
+{loading ? (
+  <div className='bg-green-50 min-h-[595px] flex items-center justify-center'>
+    <div className="text-2xl text-green-700">Loading...</div>
+  </div>
+) : !isAuthenticated ? (
+  <div className='bg-green-50 min-h-[595px] flex items-center justify-center'>
+    <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md">
+      <div className="text-4xl mb-4">🔒</div>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome to PassOP</h2>
+      <p className="text-gray-600 mb-6">
+        Please login with your GitHub account to access your password manager.
+      </p>
+      <div className="text-sm text-gray-500">
+        Click the "Login with GitHub" button in the navigation bar above to get started.
       </div>
-    ) : !isAuthenticated ? (
-      <div className='bg-green-50 min-h-[595px] flex items-center justify-center'>
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md">
-          <div className="text-4xl mb-4">🔒</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome to PassOP</h2>
-          <p className="text-gray-600 mb-6">
-            Please login with your GitHub account to access your password manager.
-          </p>
-          <div className="text-sm text-gray-500">
-            Click the "Login with GitHub" button in the navigation bar above to get started.
-          </div>
-        </div>
-      </div>
-    ) : (
+    </div>
+  </div>
+) : (
     <div className='bg-green-50 max-h-full min-h-[595px]'>
     <div className="container mx-auto bg-green-50 max-w-[60%] py-[10vh] text-center">
         <div className="logo font-bold text-2xl">
@@ -187,7 +173,7 @@ transition="Bounce"
     </div>
     </div>
     </div>
-    )}
+)}
     </>
   )
 }
