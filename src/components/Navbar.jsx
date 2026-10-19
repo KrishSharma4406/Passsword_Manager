@@ -5,8 +5,7 @@ const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   const loginWithGitHub = () => {
-    // Fixed: Changed to port 5174 to match your actual Vite server port
-    const redirectUri = encodeURIComponent('GITHUB_CALLBACK_URL=https://passsword-manager-topaz.vercel.app/api/auth/github/callback');
+    const redirectUri = GITHUB_CALLBACK_URL;
     window.location.href =
       `https://github.com/login/oauth/authorize?client_id=Ov23liaThlVYfXHVteZd&scope=user&redirect_uri=${redirectUri}`;
   };
