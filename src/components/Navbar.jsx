@@ -5,9 +5,20 @@ const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   const loginWithGitHub = () => {
-    const redirectUri = GITHUB_CALLBACK_URL;
-    window.location.href =
-      `https://github.com/login/oauth/authorize?client_id=Ov23liaThlVYfXHVteZd&scope=user&redirect_uri=${redirectUri}`;
+    const redirectUri = import.meta.env.GITHUB_CALLBACK_URL;
+
+    if (!redirectUri) {
+      console.error('GITHUB_CALLBACK_URL is not configured.');
+      return;
+    }
+
+    const params = new URLSearchParams({
+      client_id: 'Ov23liaThlVYfXHVteZd',
+      scope: 'user',
+      redirect_uri: redirectUri,
+    });
+
+    window.location.href = `https://github.com/login/oauth/authorize?${params}`;
   };
 
   return (
